@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { Search, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, MapPin, ChevronLeft, ChevronRight, Building2, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cities } from "@/data/mockData";
+import { cities, mockVendors, mockEvents } from "@/data/mockData";
 
 const heroImages = [
   {
@@ -28,16 +29,29 @@ const heroImages = [
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length);
     }, 5000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const nextSlide = () => {
@@ -51,6 +65,36 @@ const HeroSection = () => {
   const filteredCities = cities.filter((city) =>
     city.toLowerCase().includes(selectedCity.toLowerCase())
   );
+
+  // Live search results
+  const searchResults = {
+    vendors: searchQuery.length >= 2 
+      ? mockVendors.filter(v => 
+          v.organizationName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          v.city.toLowerCase().includes(searchQuery.toLowerCase())
+        ).slice(0, 3)
+      : [],
+    events: searchQuery.length >= 2 
+      ? mockEvents.filter(e => 
+          e.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          e.vendorName.toLowerCase().includes(searchQuery.toLowerCase())
+        ).slice(0, 3)
+      : []
+  };
+
+  const hasResults = searchResults.vendors.length > 0 || searchResults.events.length > 0;
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/services?q=${encodeURIComponent(searchQuery.trim())}&city=${encodeURIComponent(selectedCity)}`);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <section className="relative h-[600px] md:h-[700px] overflow-hidden">
@@ -111,8 +155,8 @@ const HeroSection = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="w-full max-w-3xl animate-fade-in-up stagger-2">
-          <div className="bg-background rounded-2xl p-2 shadow-elevated flex flex-col md:flex-row gap-2">
+        <div className="w-full max-w-3xl animate-fade-in-up stagger-2" ref={searchRef}>
+          <div className="bg-background rounded-2xl p-2 shadow-elevated flex flex-col md:flex-row gap-2 relative">
             {/* Search Input */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -120,9 +164,82 @@ const HeroSection = () => {
                 type="text"
                 placeholder="Search events, vendors..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchDropdown(true);
+                }}
+                onFocus={() => setShowSearchDropdown(true)}
+                onKeyDown={handleKeyDown}
                 className="pl-12 h-12 border-0 bg-transparent text-foreground focus-visible:ring-0"
               />
+              
+              {/* Live Search Dropdown */}
+              {showSearchDropdown && hasResults && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-background rounded-lg shadow-elevated border max-h-80 overflow-y-auto z-50 animate-fade-in">
+                  {searchResults.vendors.length > 0 && (
+                    <div className="p-2">
+                      <p className="text-xs font-medium text-muted-foreground px-2 py-1 flex items-center gap-1">
+                        <Building2 className="w-3 h-3" /> Event Organizers
+                      </p>
+                      {searchResults.vendors.map((vendor) => (
+                        <button
+                          key={vendor.id}
+                          className="w-full flex items-center gap-3 px-2 py-2 hover:bg-muted rounded-md transition-colors text-left"
+                          onClick={() => {
+                            navigate(`/services?q=${encodeURIComponent(vendor.organizationName)}&type=vendor`);
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          <img 
+                            src={vendor.image} 
+                            alt={vendor.organizationName}
+                            className="w-10 h-10 rounded-lg object-cover"
+                          />
+                          <div>
+                            <p className="font-medium text-sm text-foreground">{vendor.organizationName}</p>
+                            <p className="text-xs text-muted-foreground">{vendor.city}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {searchResults.events.length > 0 && (
+                    <div className="p-2 border-t">
+                      <p className="text-xs font-medium text-muted-foreground px-2 py-1 flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> Events & Services
+                      </p>
+                      {searchResults.events.map((event) => (
+                        <button
+                          key={event.id}
+                          className="w-full flex items-center gap-3 px-2 py-2 hover:bg-muted rounded-md transition-colors text-left"
+                          onClick={() => {
+                            navigate(`/services?q=${encodeURIComponent(event.service)}&type=event`);
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          <img 
+                            src={event.photos[0]} 
+                            alt={event.service}
+                            className="w-10 h-10 rounded-lg object-cover"
+                          />
+                          <div>
+                            <p className="font-medium text-sm text-foreground">{event.service}</p>
+                            <p className="text-xs text-muted-foreground">{event.vendorName}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <button
+                    className="w-full text-center text-sm text-primary hover:bg-muted p-3 border-t transition-colors"
+                    onClick={handleSearch}
+                  >
+                    View all results for "{searchQuery}"
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* City Selector */}
@@ -159,7 +276,7 @@ const HeroSection = () => {
             </div>
 
             {/* Search Button */}
-            <Button variant="hero" size="xl" className="md:w-auto w-full">
+            <Button variant="hero" size="xl" className="md:w-auto w-full" onClick={handleSearch}>
               <Search className="w-5 h-5 mr-2" />
               Search
             </Button>
