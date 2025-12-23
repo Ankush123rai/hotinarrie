@@ -101,8 +101,9 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-background/70 text-sm">
-                  123 Event Street, Business District<br />
-                  New Delhi, India 110001
+                  Main Ro, 11, 9th Cross, 16th Main Rd,<br />
+                  Tavarekere, BTM 1st Stage,<br />
+                  Bengaluru, Karnataka 560029
                 </span>
               </li>
               <li className="flex items-center gap-3">

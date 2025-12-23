@@ -32,8 +32,6 @@ const HeroSection = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
@@ -62,12 +60,14 @@ const HeroSection = () => {
     setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   };
 
+  // Filter cities based on search
   const filteredCities = cities.filter((city) =>
-    city.toLowerCase().includes(selectedCity.toLowerCase())
-  );
+    city.toLowerCase().includes(searchQuery.toLowerCase()) && city !== "All India"
+  ).slice(0, 3);
 
-  // Live search results
+  // Live search results - includes cities, vendors, and events
   const searchResults = {
+    cities: searchQuery.length >= 2 ? filteredCities : [],
     vendors: searchQuery.length >= 2 
       ? mockVendors.filter(v => 
           v.organizationName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -82,11 +82,11 @@ const HeroSection = () => {
       : []
   };
 
-  const hasResults = searchResults.vendors.length > 0 || searchResults.events.length > 0;
+  const hasResults = searchResults.cities.length > 0 || searchResults.vendors.length > 0 || searchResults.events.length > 0;
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      navigate(`/services?q=${encodeURIComponent(searchQuery.trim())}&city=${encodeURIComponent(selectedCity)}`);
+      navigate(`/services?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -155,14 +155,14 @@ const HeroSection = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="w-full max-w-3xl animate-fade-in-up stagger-2" ref={searchRef}>
+        <div className="w-full max-w-2xl animate-fade-in-up stagger-2" ref={searchRef}>
           <div className="bg-background rounded-2xl p-2 shadow-elevated flex flex-col md:flex-row gap-2 relative">
-            {/* Search Input */}
+            {/* Unified Search Input */}
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search events, vendors..."
+                placeholder="Search events, vendors, cities..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -176,8 +176,34 @@ const HeroSection = () => {
               {/* Live Search Dropdown */}
               {showSearchDropdown && hasResults && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-background rounded-lg shadow-elevated border max-h-80 overflow-y-auto z-50 animate-fade-in">
-                  {searchResults.vendors.length > 0 && (
+                  {searchResults.cities.length > 0 && (
                     <div className="p-2">
+                      <p className="text-xs font-medium text-muted-foreground px-2 py-1 flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> Cities
+                      </p>
+                      {searchResults.cities.map((city) => (
+                        <button
+                          key={city}
+                          className="w-full flex items-center gap-3 px-2 py-2 hover:bg-muted rounded-md transition-colors text-left"
+                          onClick={() => {
+                            navigate(`/services?q=${encodeURIComponent(city)}&city=${encodeURIComponent(city)}`);
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-primary" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm text-foreground">{city}</p>
+                            <p className="text-xs text-muted-foreground">View vendors in {city}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {searchResults.vendors.length > 0 && (
+                    <div className="p-2 border-t">
                       <p className="text-xs font-medium text-muted-foreground px-2 py-1 flex items-center gap-1">
                         <Building2 className="w-3 h-3" /> Event Organizers
                       </p>
@@ -186,7 +212,7 @@ const HeroSection = () => {
                           key={vendor.id}
                           className="w-full flex items-center gap-3 px-2 py-2 hover:bg-muted rounded-md transition-colors text-left"
                           onClick={() => {
-                            navigate(`/services?q=${encodeURIComponent(vendor.organizationName)}&type=vendor`);
+                            navigate(`/vendor/${vendor.id}`);
                             setShowSearchDropdown(false);
                           }}
                         >
@@ -214,7 +240,7 @@ const HeroSection = () => {
                           key={event.id}
                           className="w-full flex items-center gap-3 px-2 py-2 hover:bg-muted rounded-md transition-colors text-left"
                           onClick={() => {
-                            navigate(`/services?q=${encodeURIComponent(event.service)}&type=event`);
+                            navigate(`/event/${event.id}`);
                             setShowSearchDropdown(false);
                           }}
                         >
@@ -238,39 +264,6 @@ const HeroSection = () => {
                   >
                     View all results for "{searchQuery}"
                   </button>
-                </div>
-              )}
-            </div>
-
-            {/* City Selector */}
-            <div className="relative flex-1">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Select city..."
-                value={selectedCity}
-                onChange={(e) => {
-                  setSelectedCity(e.target.value);
-                  setShowCityDropdown(true);
-                }}
-                onFocus={() => setShowCityDropdown(true)}
-                onBlur={() => setTimeout(() => setShowCityDropdown(false), 200)}
-                className="pl-12 h-12 border-0 bg-transparent text-foreground focus-visible:ring-0"
-              />
-              {showCityDropdown && filteredCities.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-background rounded-lg shadow-elevated border max-h-48 overflow-y-auto z-50">
-                  {filteredCities.map((city) => (
-                    <button
-                      key={city}
-                      className="w-full px-4 py-2 text-left text-foreground hover:bg-muted transition-colors text-sm"
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setShowCityDropdown(false);
-                      }}
-                    >
-                      {city}
-                    </button>
-                  ))}
                 </div>
               )}
             </div>
