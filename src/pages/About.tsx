@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import profile from "@/assets/img/ritesh-hero-profile.jpg";
 import { 
   Users, 
   Award, 
@@ -176,9 +177,9 @@ const About = () => {
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-xl" />
                 <div className="relative aspect-square max-w-md mx-auto rounded-3xl overflow-hidden shadow-elevated">
                   <img 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600"
+                    src={profile}
                     alt="Ritesh Singh - Founder"
-                    className="w-full h-full object-cover"
+                    className="w-full h-[600px] object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6 text-white">
@@ -196,7 +197,7 @@ const About = () => {
                 </div>
               </div>
               
-              <div className="absolute -bottom-4 -left-4 bg-background rounded-2xl shadow-elevated p-4 animate-fade-in" style={{ animationDelay: "0.7s" }}>
+              <div className="absolute -bottom-7 -left-4 bg-background rounded-2xl shadow-elevated p-4 animate-fade-in" style={{ animationDelay: "0.7s" }}>
                 <div className="flex items-center gap-2">
                   <Rocket className="w-5 h-5 text-accent" />
                   <span className="font-medium text-sm">Tech Innovator</span>
@@ -393,7 +394,7 @@ const About = () => {
                   </div>
                   <div>
                     <div className="font-medium text-foreground">Email Us</div>
-                    <div className="text-muted-foreground text-sm">hello@hostinarrie.com</div>
+                    <div className="text-muted-foreground text-sm">ritesingh@gmail.com</div>
                   </div>
                 </div>
                 
@@ -403,7 +404,7 @@ const About = () => {
                   </div>
                   <div>
                     <div className="font-medium text-foreground">Call Us</div>
-                    <div className="text-muted-foreground text-sm">+91 98765 43210</div>
+                    <div className="text-muted-foreground text-sm">+91 7061860840</div>
                   </div>
                 </div>
                 
@@ -458,7 +459,7 @@ const About = () => {
                         <Input
                           id="phone"
                           type="tel"
-                          placeholder="+91 98765 43210"
+                          placeholder="+91 "
                           value={contactForm.phone}
                           onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
                           className="bg-background"
