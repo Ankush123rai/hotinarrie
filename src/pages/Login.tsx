@@ -19,11 +19,16 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login
+    // Check for admin credentials
     setTimeout(() => {
       setIsLoading(false);
-      toast.success("Welcome back! Login successful.");
-      navigate("/");
+      if (formData.email === "admin@gmail.com" && formData.password === "Admin123") {
+        toast.success("Welcome Admin! Redirecting to dashboard.");
+        navigate("/admin");
+      } else {
+        toast.success("Welcome back! Login successful.");
+        navigate("/");
+      }
     }, 1500);
   };
 

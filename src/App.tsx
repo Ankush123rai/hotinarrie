@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import VendorDetail from "./pages/VendorDetail";
 import EventDetail from "./pages/EventDetail";
 import Services from "./pages/Services";
+import ServicePage from "./pages/ServicePage";
+import VendorsPage from "./pages/VendorsPage";
+import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -28,6 +31,9 @@ const App = () => (
           <Route path="/vendor/:id" element={<VendorDetail />} />
           <Route path="/event/:id" element={<EventDetail />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/:serviceId" element={<ServicePage />} />
+          <Route path="/vendors" element={<VendorsPage />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           

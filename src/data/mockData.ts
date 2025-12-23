@@ -46,12 +46,9 @@ export const services = [
   { id: "anniversary", name: "Anniversaries", icon: "💑", color: "bg-red-100 text-red-600" },
   { id: "baby-shower", name: "Baby Showers", icon: "👶", color: "bg-blue-100 text-blue-600" },
   { id: "corporate", name: "Corporate Events", icon: "🏢", color: "bg-slate-100 text-slate-600" },
-  { id: "graduation", name: "Graduation", icon: "🎓", color: "bg-purple-100 text-purple-600" },
   { id: "engagement", name: "Engagement", icon: "💍", color: "bg-amber-100 text-amber-600" },
   { id: "housewarming", name: "Housewarming", icon: "🏠", color: "bg-green-100 text-green-600" },
-  { id: "retirement", name: "Retirement", icon: "🌴", color: "bg-teal-100 text-teal-600" },
   { id: "concert", name: "Concerts", icon: "🎵", color: "bg-indigo-100 text-indigo-600" },
-  { id: "exhibition", name: "Exhibitions", icon: "🎨", color: "bg-orange-100 text-orange-600" },
   { id: "sports", name: "Sports Events", icon: "⚽", color: "bg-emerald-100 text-emerald-600" },
 ];
 
@@ -440,6 +437,7 @@ export const mockReviews: Review[] = [
 ];
 
 export const cities = [
+  "All India",
   "New Delhi",
   "Mumbai",
   "Bangalore",
@@ -450,6 +448,15 @@ export const cities = [
   "Ahmedabad",
   "Jaipur",
   "Lucknow",
+  "Chandigarh",
+  "Indore",
+  "Bhopal",
+  "Surat",
+  "Kochi",
+  "Goa",
+  "Mysore",
+  "Coimbatore",
+  "Nagpur",
 ];
 
 export const states = [

@@ -23,9 +23,6 @@ const Header = () => {
           <Link to="/services" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             Services
           </Link>
-          <Link to="/vendors" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
-            Vendors
-          </Link>
           <Link to="/about" className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors">
             About
           </Link>
@@ -37,12 +34,6 @@ const Header = () => {
             <Link to="/login">
               <LogIn className="w-4 h-4 mr-2" />
               Login
-            </Link>
-          </Button>
-          <Button variant="gradient" size="sm" asChild>
-            <Link to="/admin">
-              <User className="w-4 h-4 mr-2" />
-              Admin
             </Link>
           </Button>
         </div>
@@ -75,13 +66,6 @@ const Header = () => {
               Services
             </Link>
             <Link
-              to="/vendors"
-              className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Vendors
-            </Link>
-            <Link
               to="/about"
               className="block py-2 text-sm font-medium text-foreground/80 hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
@@ -93,12 +77,6 @@ const Header = () => {
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <LogIn className="w-4 h-4 mr-2" />
                   Login
-                </Link>
-              </Button>
-              <Button variant="gradient" size="sm" asChild>
-                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                  <User className="w-4 h-4 mr-2" />
-                  Admin
                 </Link>
               </Button>
             </div>
