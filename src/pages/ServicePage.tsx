@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Filter, Grid3X3, List, Calendar, ChevronDown } from "lucide-react";
+import { MapPin, Grid3X3, List, Users, ChevronDown, Star } from "lucide-react";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,8 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mockEvents, services, cities } from "@/data/mockData";
-import EventCard from "@/components/landing/EventCard";
+import { mockVendors, services, cities } from "@/data/mockData";
 
 const ServicePage = () => {
   const { serviceId } = useParams();
@@ -22,19 +21,14 @@ const ServicePage = () => {
 
   const service = services.find(s => s.id === serviceId);
 
-  // Filter events based on service and city
-  const filteredEvents = useMemo(() => {
-    return mockEvents.filter((event) => {
-      const matchesService = event.service.toLowerCase().includes(service?.name.toLowerCase() || "") ||
-        serviceId === event.service.toLowerCase().replace(/\s+/g, '-');
-      const matchesCity = selectedCity === "All India" || 
-        event.vendorName.toLowerCase().includes(selectedCity.toLowerCase());
-      return matchesService || matchesCity;
+  // Filter vendors based on service and city
+  const filteredVendors = useMemo(() => {
+    return mockVendors.filter((vendor) => {
+      const matchesService = serviceId ? vendor.services.includes(serviceId) : true;
+      const matchesCity = selectedCity === "All India" || vendor.city === selectedCity;
+      return matchesService && matchesCity;
     });
-  }, [serviceId, service, selectedCity]);
-
-  // Get all events if service not found (show all related)
-  const displayEvents = filteredEvents.length > 0 ? filteredEvents : mockEvents.slice(0, 6);
+  }, [serviceId, selectedCity]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -59,7 +53,7 @@ const ServicePage = () => {
               <span className="text-gradient">{service?.name || "Services"}</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Find the best event organizers for your {service?.name.toLowerCase() || "special occasion"}
+              Find the best vendors for your {service?.name.toLowerCase() || "special occasion"}
             </p>
           </div>
         </div>
@@ -91,7 +85,7 @@ const ServicePage = () => {
             </DropdownMenu>
             
             <Badge variant="secondary" className="px-4 py-2">
-              {displayEvents.length} Events Found
+              {filteredVendors.length} Vendors Found
             </Badge>
           </div>
           
@@ -113,23 +107,64 @@ const ServicePage = () => {
           </div>
         </div>
 
-        {/* Events Grid */}
-        {displayEvents.length > 0 ? (
+        {/* Vendors Grid */}
+        {filteredVendors.length > 0 ? (
           <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
-            {displayEvents.map((event, index) => (
-              <EventCard key={event.id} event={event} index={index} />
+            {filteredVendors.map((vendor, index) => (
+              <Link to={`/vendor/${vendor.id}`} key={vendor.id}>
+                <Card 
+                  className={`group overflow-hidden border-0 shadow-card hover:shadow-elevated transition-all duration-500 hover:-translate-y-2 animate-fade-in`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img 
+                      src={vendor.image} 
+                      alt={vendor.organizationName}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                      <div className="flex items-center gap-1 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        <span className="text-sm font-medium text-foreground">{vendor.rating}</span>
+                        <span className="text-xs text-muted-foreground">({vendor.reviewCount})</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <CardContent className="p-5">
+                    <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors mb-2">
+                      {vendor.organizationName}
+                    </h3>
+                    <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
+                      <MapPin className="w-4 h-4" />
+                      <span>{vendor.city}, {vendor.state}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {vendor.services.slice(0, 3).map((serviceId) => {
+                        const svc = services.find(s => s.id === serviceId);
+                        return svc ? (
+                          <Badge key={serviceId} variant="secondary" className="text-xs">
+                            {svc.icon} {svc.name}
+                          </Badge>
+                        ) : null;
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         ) : (
           <div className="text-center py-20 animate-fade-in">
             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-              <Calendar className="w-12 h-12 text-muted-foreground" />
+              <Users className="w-12 h-12 text-muted-foreground" />
             </div>
             <h3 className="text-2xl font-bold font-heading text-foreground mb-2">
-              No events found
+              No vendors found
             </h3>
             <p className="text-muted-foreground mb-6">
-              We couldn't find any events for this service in {selectedCity}
+              We couldn't find any vendors for this service in {selectedCity}
             </p>
             <Button onClick={() => setSelectedCity("All India")} size="lg">
               View All Cities

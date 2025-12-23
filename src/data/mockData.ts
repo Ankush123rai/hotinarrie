@@ -13,6 +13,7 @@ export interface Vendor {
   reviewCount: number;
   image: string;
   createdAt: string;
+  services: string[];
 }
 
 export interface EventService {
@@ -68,6 +69,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 156,
     image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
     createdAt: "2024-01-15",
+    services: ["birthday", "anniversary", "baby-shower"],
   },
   {
     id: "2",
@@ -83,6 +85,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 98,
     image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800",
     createdAt: "2024-02-20",
+    services: ["wedding", "engagement"],
   },
   {
     id: "3",
@@ -99,6 +102,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 234,
     image: "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=800",
     createdAt: "2024-03-10",
+    services: ["corporate", "wedding"],
   },
   {
     id: "4",
@@ -114,6 +118,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 67,
     image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
     createdAt: "2024-04-05",
+    services: ["baby-shower", "birthday", "housewarming"],
   },
   {
     id: "5",
@@ -130,6 +135,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 189,
     image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
     createdAt: "2024-05-12",
+    services: ["anniversary", "wedding", "engagement"],
   },
   {
     id: "6",
@@ -145,6 +151,7 @@ export const mockVendors: Vendor[] = [
     reviewCount: 45,
     image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800",
     createdAt: "2024-06-18",
+    services: ["concert", "sports", "corporate"],
   },
 ];
 

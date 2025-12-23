@@ -116,6 +116,7 @@ const Vendors = () => {
         reviewCount: 0,
         image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800",
         createdAt: new Date().toISOString().split("T")[0],
+        services: [],
       };
       setVendors([newVendor, ...vendors]);
       toast({

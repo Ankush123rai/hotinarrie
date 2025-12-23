@@ -4,6 +4,10 @@ import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Users, 
   Award, 
@@ -18,15 +22,42 @@ import {
   Zap,
   Shield,
   Lightbulb,
-  Rocket
+  Rocket,
+  Send,
+  Phone,
+  Mail,
+  MessageSquare
 } from "lucide-react";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for reaching out. We'll get back to you soon.",
+      });
+      setContactForm({ name: "", email: "", phone: "", message: "" });
+      setIsSubmitting(false);
+    }, 1000);
+  };
 
   const stats = [
     { icon: Users, value: "10,000+", label: "Happy Customers", color: "text-primary" },
@@ -330,6 +361,146 @@ const About = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Us Section */}
+      <section className="py-20 bg-muted/30" id="contact">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Contact Info */}
+            <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+                <MessageSquare className="w-4 h-4" />
+                <span className="text-sm font-medium">Get In Touch</span>
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold font-heading mb-6">
+                Let's <span className="text-gradient">Connect</span>
+              </h2>
+              
+              <p className="text-muted-foreground mb-8 leading-relaxed">
+                Have questions about our services? Want to partner with us? Or just want to say hello? 
+                We'd love to hear from you. Fill out the form and our team will get back to you within 24 hours.
+              </p>
+
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-background shadow-card hover:shadow-elevated transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">Email Us</div>
+                    <div className="text-muted-foreground text-sm">hello@hostinarrie.com</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-background shadow-card hover:shadow-elevated transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">Call Us</div>
+                    <div className="text-muted-foreground text-sm">+91 98765 43210</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-background shadow-card hover:shadow-elevated transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">Visit Us</div>
+                    <div className="text-muted-foreground text-sm">Main Road, 11, 9th Cross, 16th Main Rd, Tavarekere, BTM 1st Stage, Bengaluru, Karnataka 560029</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <div className={`transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
+              <Card className="border-0 shadow-elevated overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-primary to-accent" />
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-bold font-heading mb-6 text-foreground">Send us a Message</h3>
+                  
+                  <form onSubmit={handleContactSubmit} className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input
+                        id="name"
+                        placeholder="Enter your name"
+                        value={contactForm.name}
+                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                        required
+                        className="bg-background"
+                      />
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={contactForm.email}
+                          onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                          required
+                          className="bg-background"
+                        />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="+91 98765 43210"
+                          value={contactForm.phone}
+                          onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                          className="bg-background"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="message">Your Message</Label>
+                      <Textarea
+                        id="message"
+                        placeholder="Tell us about your event or inquiry..."
+                        rows={5}
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                        required
+                        className="bg-background resize-none"
+                      />
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      variant="gradient" 
+                      size="lg" 
+                      className="w-full"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <Send className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
